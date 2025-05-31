@@ -13,4 +13,9 @@ public static class StateMachineExtensions
     {
         stateMachine.AddAnyTransition(to, condition);
     }
+
+    public static TransitionBuilder When(this StateMachine stateMachine, IState from)
+    {
+        return new TransitionBuilder(from, stateMachine);
+    }
 }
