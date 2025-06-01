@@ -7,12 +7,12 @@ public class TransitionBuilder(IState from, StateMachine stateMachine)
     private readonly StateMachine _stateMachine = stateMachine;
     private readonly IState _from = from;
 
-    public TransitionBuilder To(IState to)
+    public DestinationBuilder To(IState to)
     {
         return new DestinationBuilder(_from, to, _stateMachine);
     }
 
-    private class DestinationBuilder(IState from, IState to, StateMachine stateMachine)
+    public class DestinationBuilder(IState from, IState to, StateMachine stateMachine)
         : TransitionBuilder(from, stateMachine)
     {
         public TransitionBuilder If(IPredicate condition)
