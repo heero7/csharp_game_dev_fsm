@@ -5,7 +5,7 @@ public class StateMachine
     public IState Current => _current.State;
 
     private readonly Dictionary<Type, StateNode> _stateNodes = new();
-    private readonly HashSet<ITransition> _anyTransitions = [];
+    private readonly HashSet<ITransition> _anyTransitions = new();
     
     private StateNode _current;
 
@@ -87,9 +87,14 @@ public class StateMachine
         return node;
     }
 
-    private class StateNode(IState state)
+    private class StateNode
     {
-        public IState State { get; } = state;
+        public StateNode(IState state)
+        {
+            State = state;
+        }
+
+        public IState State { get; }
         public HashSet<ITransition> Transitions { get; } = new();
 
         public void AddTransition(IState to, IPredicate condition) => Transitions.Add(new Transition(to, condition));
