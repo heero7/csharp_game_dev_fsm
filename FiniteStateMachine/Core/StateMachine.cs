@@ -3,11 +3,13 @@ namespace FiniteStateMachine.Core;
 public class StateMachine
 {
     public IState Current => _current.State;
+    public IState Previous => _previous.State;
 
     private readonly Dictionary<Type, StateNode> _stateNodes = new();
     private readonly HashSet<ITransition> _anyTransitions = new();
     
     private StateNode _current;
+    private StateNode _previous;
 
     public void Update()
     {
@@ -26,6 +28,13 @@ public class StateMachine
         _current = _stateNodes[state.GetType()];
         _current.State.OnEnter();
     }
+    
+    public void SetInitialState(IState state)
+    {
+        _current = _stateNodes[state.GetType()];
+        _previous ??= _current;
+        _current.State.OnEnter();
+    }
 
     private void ChangeState(IState state)
     {
@@ -36,6 +45,7 @@ public class StateMachine
 
         var nextStateNode = _stateNodes[state.GetType()];
 
+        var previousStateNode = _current;
         var previousState = _current.State;
         var nextState = nextStateNode.State;
         
@@ -43,6 +53,7 @@ public class StateMachine
         nextState.OnEnter();
 
         _current = nextStateNode;
+        _previous = previousStateNode;
     }
 
     public void AddTransition(IState from, IState to, IPredicate condition)
